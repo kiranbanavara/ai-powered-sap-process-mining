@@ -1,0 +1,25 @@
+# Pilot config: live S/4HANA tenant + OpenAI model.
+# Run:  sap-mining run --config config/config.s4hana.yaml
+# Make sure the .env (or your secret manager) provides S4_* and OPENAI_API_KEY.
+
+connector:
+  kind: s4hana
+  base_url: ${S4_BASE_URL}
+  user: ${S4_USER}
+  password: ${S4_PASSWORD}
+  verify_ssl: true
+  page_size: 500
+
+llm:
+  provider: openai
+  model: gpt-5
+  api_key: ${OPENAI_API_KEY}
+
+run:
+  process: o2c
+  window_days: 30
+  sales_orgs: ["DE01", "DE02"]   # scope the pilot to one or two sales orgs
+
+output:
+  directory: reports
+  filename_template: "o2c-{date}.md"

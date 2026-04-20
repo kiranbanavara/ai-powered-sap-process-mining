@@ -1,0 +1,21 @@
+# Pilot config: classic ECC via direct SQL + Gemini.
+# Run:  sap-mining run --config config/config.ecc.yaml
+
+connector:
+  kind: ecc
+  mode: sql
+  # Dialect can be oracle+oracledb, mssql+pyodbc, hana+hdbcli, db2+ibm_db_sa
+  sqlalchemy_url: ${ECC_SQLALCHEMY_URL}
+
+llm:
+  provider: gemini
+  model: gemini-2.5-pro
+  api_key: ${GEMINI_API_KEY}
+
+run:
+  process: o2c
+  window_days: 30
+
+output:
+  directory: reports
+  filename_template: "o2c-ecc-{date}.md"

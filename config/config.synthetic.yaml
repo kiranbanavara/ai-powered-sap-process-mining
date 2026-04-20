@@ -1,0 +1,21 @@
+# Demo config: synthetic O2C event log + Anthropic Claude.
+# Run:  sap-mining run --config config/config.synthetic.yaml
+
+connector:
+  kind: synthetic
+  seed: 42
+  n_cases: 800
+  days_back: 60
+
+llm:
+  provider: anthropic
+  model: claude-sonnet-4-6
+  api_key: ${ANTHROPIC_API_KEY}
+
+run:
+  process: o2c
+  window_days: 60
+
+output:
+  directory: reports
+  filename_template: "o2c-synthetic-{date}.md"

@@ -1,0 +1,26 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.env
+.env.local
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+out/
+reports/
+*.parquet
+*.csv
+!examples/*.csv
+!tests/**/*.csv
+.DS_Store
+.idea/
+.vscode/
+
+# Internal-only docs (walkthroughs, notes, drafts). Keep local, not for public repo.
+docs/internal/
