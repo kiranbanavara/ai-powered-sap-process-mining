@@ -1,0 +1,26 @@
+# Demo config: synthetic O2C + OpenAI (end-to-end parity with the Anthropic path).
+# Set OPENAI_API_KEY in .env first.
+# Run:
+#   sap-mining run        --config config/config.synthetic-openai.yaml
+#   sap-mining investigate --config config/config.synthetic-openai.yaml --finding B1
+
+connector:
+  kind: synthetic
+  seed: 42
+  n_cases: 800
+  days_back: 60
+
+llm:
+  provider: openai
+  # gpt-4o is broadly compatible with tool-use + non-default temperature.
+  # gpt-5 and gpt-4.1 also work. Reasoning models (o1/o3/o4) need temperature=1.
+  model: gpt-4o
+  api_key: ${OPENAI_API_KEY}
+
+run:
+  process: o2c
+  window_days: 60
+
+output:
+  directory: reports
+  filename_template: "o2c-openai-{date}.md"
