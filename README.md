@@ -78,16 +78,31 @@ or service line on a multi-line order still flags the case.
 | Item rollup | `item_category_mix` | sorted-distinct categories (e.g. `D+NORM`) |
 | Item rollup | `primary_material` | first-line MATNR |
 
-No lock-in on the LLM. A customer running Gemini on their GCP tenancy drops in
-`provider: gemini` for the Flagger and the rest of the pipeline doesn't change.
-(Investigator tool-use is currently Anthropic-only.)
+No lock-in on the LLM. Switch providers with a one-line config change — Flagger *and*
+Investigator both run on all three today:
+
+| Capability | Anthropic | OpenAI | Gemini |
+|---|:-:|:-:|:-:|
+| Flagger briefing | ✅ | ✅ | ✅ |
+| Investigator (tool-use) | ✅ | ✅ | ✅ |
+| Streaming tool callbacks | ✅ | ✅ | ✅ |
+
+Default models: `claude-sonnet-4-6`, `gpt-4o`, `gemini-2.5-pro`. Override any of them in
+the YAML's `llm.model` field.
 
 ## Quick start (demo with synthetic data)
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -e '.[anthropic,ui]'      # Anthropic + Streamlit UI
-cp .env.example .env                  # fill in ANTHROPIC_API_KEY (auto-loaded — no export needed)
+
+# Pick the provider extras you want; combine freely with [ui]
+pip install -e '.[anthropic,ui]'              # Anthropic (default demo path)
+#   or: pip install -e '.[openai,ui]'
+#   or: pip install -e '.[gemini,ui]'
+#   or: pip install -e '.[all]'               # everything
+
+cp .env.example .env                          # fill in ANTHROPIC_API_KEY / OPENAI_API_KEY
+                                              # / GEMINI_API_KEY — auto-loaded, no export
 
 # Run both pipelines so the UI landing has two tiles to pick from
 sap-mining run --config config/config.synthetic.yaml        # O2C
@@ -95,6 +110,12 @@ sap-mining run --config config/config.synthetic-p2p.yaml    # P2P
 
 # Then browse the briefings + kick off Investigator sessions
 sap-mining ui  --config config/config.synthetic.yaml
+```
+
+Swap the LLM by pointing at a different config instead:
+```bash
+sap-mining run --config config/config.synthetic-openai.yaml    # OpenAI (gpt-4o)
+sap-mining run --config config/config.synthetic-gemini.yaml    # Gemini (gemini-2.5-pro)
 ```
 
 The synthetic generator ships with realistic seeded patterns so both processes have
@@ -138,7 +159,8 @@ sap-mining check --config config/config.s4hana.yaml
 
 Each `run` persists the event log + findings to `reports/latest/<process>/`. The
 Investigator loads them, picks one finding (referenced by ID like `B1`, `B2`, `A1`),
-and drives a tool-use agent loop against Anthropic Claude to find the root cause.
+and drives a tool-use agent loop against the configured LLM (Anthropic / OpenAI /
+Gemini all work today) to find the root cause.
 
 ```bash
 # List findings from the last run of the process in the config
