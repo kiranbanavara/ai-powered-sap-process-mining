@@ -25,7 +25,7 @@ dependencies = [
 [project.optional-dependencies]
 anthropic = ["anthropic>=0.40"]
 openai = ["openai>=1.50"]
-gemini = ["google-genai>=0.3"]
+gemini = ["google-genai>=1.0"]
 ui = ["streamlit>=1.36"]
 hana = ["hdbcli>=2.20"]
 rfc = ["pyrfc>=3.3"]
@@ -33,7 +33,7 @@ dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.6"]
 all = [
     "anthropic>=0.40",
     "openai>=1.50",
-    "google-genai>=0.3",
+    "google-genai>=1.0",
     "streamlit>=1.36",
 ]
 

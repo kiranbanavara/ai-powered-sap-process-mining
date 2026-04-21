@@ -40,7 +40,7 @@ per-process detail view with live tool-call streaming).
 | Process definitions | `processes/` | ✔ **O2C and P2P** ship in-box. Add more by dropping a `ProcessDefinition` alongside them. |
 | Mining analytics | `mining/analytics.py` | Cycle times · dimensional bottlenecks · variants · rework · anomalies — process-aware |
 | LLM (Flagger) | `llm/` + `analysis/` | ✔ `anthropic` · `openai` · `gemini` — customer picks their trusted model |
-| LLM (Investigator) | `investigator/` | Tool-using agent with 6 RCA tools — ✔ `anthropic` · ✔ `openai` · ❌ `gemini` (stub) |
+| LLM (Investigator) | `investigator/` | Tool-using agent with 6 RCA tools — ✔ `anthropic` · ✔ `openai` · ✔ `gemini` |
 | UI | `ui/streamlit_app.py` | Multi-process landing + per-process detail + streamed RCA |
 | Report | `reporting/markdown.py` | Markdown output, cron-friendly |
 
@@ -169,10 +169,13 @@ The Investigator has 6 tools on the event log:
 Output lands as `reports/rca-<finding>-<timestamp>.md` with a full audit trail of every
 tool call and its arguments.
 
-**Provider note:** the Investigator runs today on **Anthropic Claude** and **OpenAI**
-(chat-completions tool-use). To use OpenAI, set `OPENAI_API_KEY` in `.env` and point
-the config at `provider: openai` (see `config/config.synthetic-openai.yaml`). Gemini's
-tool-use path is still a stub.
+**Provider note:** the Investigator runs on all three providers —
+**Anthropic Claude**, **OpenAI** (chat-completions tool-use), and **Google Gemini**
+(function-calling). Drop the matching API key into `.env` and pick one of:
+
+- `config/config.synthetic.yaml`         — Anthropic (default)
+- `config/config.synthetic-openai.yaml`  — OpenAI (`gpt-4o` default)
+- `config/config.synthetic-gemini.yaml`  — Gemini (`gemini-2.5-pro` default)
 
 ### Streamlit UI
 
@@ -337,11 +340,10 @@ tests/                     pytest suite (synthetic O2C, synthetic P2P, investiga
       account-assignment for P2P)
 - [x] Cycle / dimensional bottleneck / variant / anomaly analytics
 - [x] Anthropic / OpenAI / Gemini provider registry (Flagger)
-- [x] **Investigator agent** — tool-using RCA with 6 tools (Anthropic + OpenAI)
+- [x] **Investigator agent** — tool-using RCA on all three providers (Anthropic, OpenAI, Gemini)
 - [x] **Streamlit UI** — multi-process landing + scoped detail + streamed tool calls
 - [x] `.env` auto-load (no `export` needed)
 - [ ] Dedup overlapping dimensional findings before handing to LLM
-- [ ] Tool-use support on Gemini provider (Investigator parity)
 - [ ] Email / Slack delivery of briefings + RCA
 - [ ] Cross-period delta ("vs. last week") in findings
 - [ ] Record-to-Report process

@@ -1,0 +1,26 @@
+# Demo config: synthetic O2C + Google Gemini (end-to-end parity with Anthropic/OpenAI).
+# Set GEMINI_API_KEY in .env first.
+# Run:
+#   sap-mining run        --config config/config.synthetic-gemini.yaml
+#   sap-mining investigate --config config/config.synthetic-gemini.yaml --finding B1
+
+connector:
+  kind: synthetic
+  seed: 42
+  n_cases: 800
+  days_back: 60
+
+llm:
+  provider: gemini
+  # gemini-2.5-pro has the strongest tool-use behaviour.
+  # gemini-2.5-flash is cheaper and also supports function calling.
+  model: gemini-2.5-pro
+  api_key: ${GEMINI_API_KEY}
+
+run:
+  process: o2c
+  window_days: 60
+
+output:
+  directory: reports
+  filename_template: "o2c-gemini-{date}.md"
